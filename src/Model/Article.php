@@ -9,6 +9,7 @@ class Article {
     private $Auteur;
     private $ImageRepository;
     private $ImageFileName;
+    private $categorieid;
 
     /**
      * Cette fonction retourne les X premiers mots de la description
@@ -32,6 +33,7 @@ class Article {
                 "Auteur" => $this->getAuteur(),
                 "ImageRepository" => $this->getImageRepository(),
                 "ImageFilename" => $this->getImageFileName(),
+                "categorieid" => $this->getcategorieid(),
             ]);
             return $bdd->lastInsertId();
         }catch (\Exception $e){
@@ -79,9 +81,9 @@ class Article {
             "Id" => $Id
         ]);
         $requete->setFetchMode(\PDO::FETCH_CLASS,'src\Model\Article');
-        $article = $requete->fetch();
+       $categorie = $requete->fetch();
 
-        return $article;
+        return$categorie;
     }
 
     public function SqlDeleteById(\PDO $bdd, $Id){
@@ -220,7 +222,23 @@ class Article {
         $this->ImageFileName = $ImageFileName;
         return $this;
     }
+    /**
+     * @return mixed
+     */
+    public function getcategorieid()
+    {
+        return $this->categorieid;
+    }
 
+    /**
+     * @param mixed $categorieid
+     * @return Article
+     */
+    public function setcategorieid($categorieid)
+    {
+        $this->categorieid = $categorieid;
+        return $this;
+    }
 
 
 

@@ -1,24 +1,21 @@
 {% extends "base.html.twig" %}
 {% block title %}
-    Liste article >> {{ parent() }}
+    Liste categorie >> {{ parent() }}
 {% endblock %}
 
 {% block body %}
-    <h1>Voici la liste des articles</h1>
+    <h1>Voici la liste des catégories</h1>
     <div class="row">
-    {% for article in articleList %}
+    {% for categorie in categorieList %}
         <div class="col-sm-3">
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
-                    <h5 class="card-title">{{ article.Titre }}</h5>
+                    <h5 class="card-title">{{ categorie.libelle }}</h5>
                     {# Ceci est un commentaire qui ne sera pas visible sur le code HTML #}
                     <p class="card-text">
-                        {{ article.getShortDesc(3) }}
-                        <br/>
-                        <i class="{{ categorie.icon }}"></i>
-                        Ecrit le {{ article.DateAjout|date("d/m/Y") }}
+                        {{ categorie.icon }}
                     </p>
-                    <a href="/Article/Show/{{ article.Id }}" class="btn btn-primary">
+                    <a href="/Categorie/Show/{{ categorie.Id }}" class="btn btn-primary">
                         Consulter
                     </a>
                 </div>

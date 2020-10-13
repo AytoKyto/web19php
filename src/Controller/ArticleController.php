@@ -2,6 +2,7 @@
 namespace src\Controller;
 
 use src\Model\Article;
+use src\Model\Categorie;
 use src\Model\BDD;
 
 class ArticleController extends AbstractController {
@@ -27,18 +28,20 @@ class ArticleController extends AbstractController {
     public function All(){
         $articles = new Article();
         $datas = $articles->SqlGetAll(BDD::getInstance());
-
         return $this->twig->render("Article/all.html.twig", [
-            "articleList"=>$datas
+            "articleList"=>$datas,
         ]);
     }
 
     public function Show($id){
         $articles = new Article();
         $datas = $articles->SqlGetById(BDD::getInstance(),$id);
-
+        $categorie = new Categorie();
+        $catdatas = $categorie->SqlGetById(BDD::getInstance(),$datas->getcategorieid);
+        var_dump($catdatas);
         return $this->twig->render("Article/show.html.twig", [
-            "article"=>$datas
+            "article"=>$datas,
+            "categorie"=>$catdatas
         ]);
     }
 
