@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+{% block title %}
+    Liste comment >> {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <h1>Liste des commentaires</h1>
+    <div class="row">
+    {% for comment in commentList %}
+        <div class="col-sm-3">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ comment.user }}</h5>               
+                    <p>{{comment.commentaire|raw }}</p>     
+                    <p>{{comment.mail}}</p>     
+                    <p>{{comment.date|date('d/m/Y') }}</p>     
+                    <a href="/Comment/Show/{{ comment.id }}" class="btn btn-primary">
+                        Consulter
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

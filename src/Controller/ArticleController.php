@@ -1,14 +1,19 @@
 <?php
+
 namespace src\Controller;
 
 use src\Model\Article;
 use src\Model\Categorie;
+use src\Model\Comment;
 use src\Model\BDD;
+use DateTime;
 
-class ArticleController extends AbstractController {
+class ArticleController extends AbstractController
+{
 
-    public function Add(){
-        if($_POST){
+    public function Add()
+    {
+        if ($_POST) {
             $objArticle = new Article();
             $objArticle->setTitre($_POST["Titre"]);
             $objArticle->setDescription($_POST["Description"]);
@@ -18,45 +23,79 @@ class ArticleController extends AbstractController {
             $id = $objArticle->SqlAdd(BDD::getInstance());
             // Redirection
             header("Location:/article/show/$id");
-        }else{
+        } else {
             return $this->twig->render("Article/add.html.twig");
         }
-
-
     }
 
-    public function All(){
+    public function All()
+    {
         $articles = new Article();
         $datas = $articles->SqlGetAll(BDD::getInstance());
+
         return $this->twig->render("Article/all.html.twig", [
-            "articleList"=>$datas,
+            "articleList" => $datas
         ]);
     }
 
-    public function Show($id){
+    /*  public function Show($id){
         $articles = new Article();
         $datas = $articles->SqlGetById(BDD::getInstance(),$id);
         $categorie = new Categorie();
-        $catdatas = $categorie->SqlGetById(BDD::getInstance(),$datas->getcategorieid);
-        var_dump($catdatas);
+        $dataCategorie = $categorie->SqlGetById(BDD::getInstance(),$datas->getCategorieId());
+        if($_POST){
+            $objComment = new Comment();
+            $objComment->setuser($_POST["user"]);
+           // $objComment->setcommentaire($_POST["commentaire"]);
+            //Exécuter l'insertion
+            $id = $objComment->SqlAdd(BDD::getInstance());
+        }
         return $this->twig->render("Article/show.html.twig", [
             "article"=>$datas,
-            "categorie"=>$catdatas
+            "categorie"=> $dataCategorie
+        ]);
+    }*/
+    public function Show($id)
+    {
+        $articles = new Article();
+        $datas = $articles->SqlGetById(BDD::getInstance(), $id);
+        $categories = new Categorie();
+        $categorie = $categories->SqlGetById(BDD::getInstance(), $datas->getCategorieId());
+        $comment = new Comment();
+        $comment = $comment->findByArticle(BDD::getInstance(), $datas->getId());
+        if ($_POST) {
+            $date = new \DateTime();
+            $commentaire = new Comment();
+            $commentaire->setcommentaire($_POST['commentaire']);
+            $commentaire->setmail($_POST['mail']);
+            $commentaire->setuser($_POST['user']);
+            $commentaire->setDate($date->format('Y-m-d'));
+            $commentaire->setarticle_id($id);
+            $commentaire->SqlAddToComment(BDD::getInstance());
+            header("Location: /Article/show/$id");
+        }
+
+        return $this->twig->render("Article/show.html.twig", [
+            "article" => $datas,
+            "comments" => $comment,
+            "categorie" => $categorie
         ]);
     }
 
-    public function Delete($id){
+    public function Delete($id)
+    {
         $articles = new Article();
-        $datas = $articles->SqlDeleteById(BDD::getInstance(),$id);
+        $datas = $articles->SqlDeleteById(BDD::getInstance(), $id);
 
         header("Location:/Article/All");
     }
 
-    public function Update($id){
+    public function Update($id)
+    {
         $articles = new Article();
-        $datas = $articles->SqlGetById(BDD::getInstance(),$id);
+        $datas = $articles->SqlGetById(BDD::getInstance(), $id);
 
-        if($_POST){
+        if ($_POST) {
             $objArticle = new Article();
             $objArticle->setTitre($_POST["Titre"]);
             $objArticle->setDescription($_POST["Description"]);
@@ -67,24 +106,24 @@ class ArticleController extends AbstractController {
             $objArticle->SqlUpdate(BDD::getInstance());
             // Redirection
             header("Location:/article/show/$id");
-        }else{
+        } else {
             return $this->twig->render("Article/update.html.twig", [
-                "article"=>$datas
+                "article" => $datas
             ]);
         }
-
     }
 
-    public function Fixtures(){
+    public function Fixtures()
+    {
         //Vider la table
         $article = new Article();
         $article->SqlTruncate(BDD::getInstance());
 
-//Tableau "Jeu de donnée"
+        //Tableau "Jeu de donnée"
         $Titres = ["PHP en force", "Java en baisse", "JS un jour ça marchera", "Flutter valeur montante", "GO le futur"];
         $Prenoms = ["Rebecca", "Alexandre", "Emilie", "Léo", "Aegir"];
         $datedujour = new \DateTime();
-        for($i = 0;$i < 200;$i++){
+        for ($i = 0; $i < 200; $i++) {
             $datedujour->modify("+1 day");
             shuffle($Titres);
             shuffle($Prenoms);
@@ -101,5 +140,4 @@ class ArticleController extends AbstractController {
         }
         header("Location:/?controller=Article&action=All");
     }
-
 }

@@ -1,29 +1,14 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <h1>Détail de l'article</h1>
-    <p>{{ article.Titre }}</p>
-    <p>{{ article.Description }}</p>
-    <p>{{ article.Auteur }}</p>
-    <p><a href="/article/update/{{ article.Id }}"> Modifier ce super Article </a></p>
-    <p><a href="/article/delete/{{ article.Id }}"> Supprimer ce super Article </a></p>
-    <div class="row">
-    
-    </div>
-    {% include 'Comment/add.html.twig' %}
-    {% if comment != null %}
-    <p>{{comment.user}}</p>
-    <p>{{comment.commentaire}}</p>
-    {% endif %}
-    {% for comment in comments %}
-        <div class="card">
+    <div class="card">
             <h5 class="card-header">User : {{comment.user}}</h5>
             <div class="card-body">
             <h5 class="card-title">Mail : {{comment.mail}} ---- Date : {{comment.date|date('d/m/Y')}}</h5>
             <p class="card-text">Commentaire : {{comment.commentaire}}</p>
             <a href="/comment/update/{{ comment.id }}" class="btn btn-primary"> Modifier le commentaire </a>
             <a href="/comment/delete/{{ comment.id }}" class="btn btn-primary"> Supprimer le commentaire </a>
+            <a href="/article/all/" class="btn btn-primary">Voir les articles</a>
         </div>
         </div>
-    {% endfor %}
 {% endblock %}
